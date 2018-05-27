@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="none.example.com.mst.MainActivity">
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/next" />
+
+    <Button
+        android:id="@+id/previous"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/next"
+        android:background="@drawable/previous" />
+
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/previous"
+        android:background="@drawable/clear" />
+
+    <Button
+        android:id="@+id/addVertexButton"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_above="@id/next"
+        android:background="@drawable/vertex" />
+
+    <Button
+        android:id="@+id/addEdgeButton"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_above="@id/previous"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/addVertexButton"
+        android:background="@drawable/edge" />
+
+    <Button
+        android:id="@+id/createGraph"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
+        android:layout_above="@id/clear"
+        android:layout_toRightOf="@id/addEdgeButton"
+        android:background="@drawable/graph" />
+
+    <none.example.com.mst.CustomView
+        android:id="@+id/customView"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/addEdgeButton"
+        android:layout_height="match_parent" />
+
+
+</RelativeLayout>
