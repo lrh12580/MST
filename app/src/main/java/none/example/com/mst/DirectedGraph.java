@@ -89,13 +89,14 @@ public class DirectedGraph {
         //    return false;
         //}
         DirectedGraph finalGraph = graphs.get(graphs.size() - 1);
+        Log.d("DirectedGraph", "directedGraphs_size: " + directedGraphs.size());
         for (int i = directedGraphs.size() - 2; i >= 0; i--) {
             DirectedGraph directedGraph = directedGraphs.get(i);
             finalGraph = directedGraph.removeCircle(r, directedGraph, finalGraph);
             graphs.add(finalGraph);
         }
 
-        graphs.add(finalGraph);
+        //graphs.add(finalGraph);
         return true;
     }
 
@@ -106,14 +107,10 @@ public class DirectedGraph {
         graphs.add(modified);
         DirectedGraph fStar = graph.FStar(r, modified);
         graphs.add(fStar);
-//        if (fStar != null)
-//            graphs.add(fStar);
-//        else
-//            return false;
         ArrayList<Integer> circles = graph.isMST(r, fStar);
         DirectedGraph finalGraph;
         if (circles != null) {
-            finalGraph = graph.contract(circles, r, graph);
+            finalGraph = graph.contract(circles, r, graph, modified);
 
             MST(r, finalGraph, return_graphs);
         } else {
@@ -181,11 +178,12 @@ public class DirectedGraph {
         return directedGraph;
     }
 
-    public DirectedGraph contract(ArrayList<Integer> circle, int r, DirectedGraph graph) {
+    public DirectedGraph contract(ArrayList<Integer> circle, int r, DirectedGraph graph, DirectedGraph modified) {
         Log.d("DirectedGraph", "circle: " + circle);
 
         int vertex_number = graph.getVertex_number();
         int[][] graph_weights = graph.getWeights();
+        int[][] modified_weights = modified.getWeights();
         int[][] weights = new int[vertex_number][vertex_number];
         for (int i = 0; i < vertex_number; i++)
             for (int j = 0; j < vertex_number; j++)
@@ -193,16 +191,22 @@ public class DirectedGraph {
         int superNode = circle.get(0);
 
         for (int i = 0; i < vertex_number; i++) {
+            int[] temp_weights = new int[circle.size()];
+            for (int m = 0; m < temp_weights.length; m++)
+                temp_weights[m] = modified_weights[i][circle.get(m)];
+            int min_index = 0;
+            for (int m = 0; m < temp_weights.length; m++)
+                if (temp_weights[m] < temp_weights[min_index])
+                    min_index = m;
+            min_index = circle.get(min_index);
             for (int j = 0; j < vertex_number; j++) {
                 if (graph_weights[i][j] != noEdge) {
                     if (circle.indexOf(i) == -1 && circle.indexOf(j) == -1)
                         weights[i][j] = graph_weights[i][j];
                     else if (circle.indexOf(i) == -1 && circle.indexOf(j) != -1) {
-                        if (weights[i][superNode] == noEdge || weights[i][superNode] > graph_weights[i][j]) {
-                            weights[i][superNode] = graph_weights[i][j];
-                        }
+                        weights[i][superNode] = graph_weights[i][min_index];
                     } else if (circle.indexOf(i) != -1 && circle.indexOf(j) == -1) {
-                        if (weights[superNode][j] == noEdge || weights[superNode][j] > graph_weights[i][j]) {
+                        if (weights[superNode][j] > graph_weights[i][j]) {
                             weights[superNode][j] = graph_weights[i][j];
                         }
 
@@ -253,6 +257,7 @@ public class DirectedGraph {
                         for (int m = 0; m < circle.size(); m++) {
                             if (graph_weights[circle.get(m)][j] == fStar_weights[i][j]) {
                                 weights[circle.get(m)][j] = fStar_weights[i][j];
+                                Log.d("DirectedGraph", "weights[circle.get(m)][j]:"+weights[circle.get(m)][j]);
                                 continue first;
                             }
                         }
@@ -265,7 +270,7 @@ public class DirectedGraph {
                             }
                         }
                     }
-                } else {
+                } else if (i != superNode && j != superNode && fStar_weights[i][j] != noEdge) {
                     weights[i][j] = fStar_weights[i][j];
                 }
             }
